@@ -1,0 +1,24 @@
+endpoint:
+  url: https://eusdsappdlep06p.sds.eu.sony.com
+job:
+  #  The latest compute 0.5.0 which we have on the machine supports the command
+  #    cpt registry login artifactory.sds.eu.sony.com
+  #  You will be prompted for your Username (your Artifactory user) and Password (your Artifactory token).
+  image: artifactory.sds.eu.sony.com/project_registry/sensor_fusion/depth_fusion/sds_rgbd_fusion_library/pytorch:2
+  compression: 2 # enable comp on VPN
+  artifacts:
+    - weights
+    - logs
+  gpus: 1
+  volumes:
+    # - "rgbdfusion_datasets_local:/datasets:ro"
+    - "rgbdfusion_datasets:/cstorage:ro"
+    # DEPRECATED, DLE01: "dataset_st1k:/datasets:ro"
+  environments:
+    - "AWS_REGION=be-sds-bru-0"
+    - "S3_ENDPOINT=https://minio.sds.eu.sony.com:9000"
+    - "AWS_ACCESS_KEY_ID=W6W1vhrQhbGXJXjb4CFc"
+    - "AWS_SECRET_ACCESS_KEY=jWPAF7cLyK6vCQ6CNpPSZO7iqhITRJCdnjsC1rPi"
+  ignore:
+    - .*
+    - datasets/Sintel/

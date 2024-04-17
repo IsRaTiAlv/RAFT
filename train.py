@@ -15,7 +15,9 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from torch.utils.data import DataLoader
-from raft import RAFT
+from core.raft import RAFT
+from core.utils.utils import InputPadder
+
 import evaluate
 import datasets
 
@@ -163,7 +165,8 @@ def train(args):
         for i_batch, data_blob in enumerate(train_loader):
             optimizer.zero_grad()
             image1, image2, flow, valid = [x.cuda() for x in data_blob]
-
+            padder = InputPadder(image1.shape)
+            image1, image2, flow, valid = padder.pad(image1, image2, flow, valid)
             if args.add_noise:
                 stdv = np.random.uniform(0.0, 5.0)
                 image1 = (image1 + stdv * torch.randn(*image1.shape).cuda()).clamp(0.0, 255.0)
